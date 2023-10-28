@@ -22,7 +22,7 @@ $(function () {
     let textContent = $("#" + timeSlotId).children(".description").val();
     console.log(textContent); ///////////////// Test
 
-    localStorage.setItem("" + timeSlotId, textContent);
+    localStorage.setItem("" + timeSlotId, JSON.stringify(textContent));
   });
   // TODO: Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour. HINTS: How can the id
@@ -34,6 +34,7 @@ $(function () {
   // Get current hour from Day.js here (variable shown on next line) and save it to a variable
   let currentHour;
   let timeSlotContainer = $("#timeSlots");
+  // Put every time slot into an array
   let timeSlotList = timeSlotContainer.find("[id]").map(function () {
     return this.id;
   }).get();
@@ -85,7 +86,34 @@ $(function () {
   // attribute of each time-block be used to do this?
   //
 
+  let keyIdList = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    keyIdList.push(localStorage.key(i));
+  }
+  console.log(keyIdList); ///////////////// Test
 
+  let keyValueList = getAllStorage();
+  keyValueList.reverse();
+  console.log(keyValueList); ///////////////// Test
+
+  for (let i = 0; i < keyIdList.length; i++) {
+    if (timeSlotList.includes(keyIdList[i])) {
+      $("#" + keyIdList[i]).children(".description").val() = keyValueList[i]; ///////////////// Issue selecting the correct element here
+    }
+  }
+
+  // https://stackoverflow.com/questions/17745292/how-to-retrieve-all-localstorage-items-without-knowing-the-keys-in-advance
+  function getAllStorage() {
+    let values = [];
+    let keys = Object.keys(localStorage);
+    let i = keys.length;
+  
+    while (i--) {
+      values.push(JSON.parse(localStorage.getItem(keys[i])));
+    }
+  
+    return values;
+  }
 
   // TODO: Add code to display the current date in the header of the page.
 
