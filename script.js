@@ -1,44 +1,33 @@
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
-$(function () {
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  //
-
+$(function () { ///////////////// Might need to change to $(document).ready(function () {}) to the beginning of this function
   let saveBtn = $(".saveBtn");
   saveBtn.attr("type", "button");
 
-  saveBtn.on("click", function (event) {
-    // event.preventDefault();
-
+  // When the save button is clicked, text input is saved in local storage.
+  saveBtn.on("click", function () {
     let timeSlotId = $(this).parent().attr("id");
-    console.log(timeSlotId); ///////////////// Test
+    // console.log(timeSlotId); ///////////////// Test
     
     let textContent = $("#" + timeSlotId).children(".description").val();
-    console.log(textContent); ///////////////// Test
+    // console.log(textContent); ///////////////// Test
 
     localStorage.setItem("" + timeSlotId, JSON.stringify(textContent));
   });
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
 
-  // Get current hour from Day.js here (variable shown on next line) and save it to a variable
-  let currentHour;
+  // Save dayjs to a variable and use it to change time slot color based on current time.
+  // https://www.youtube.com/watch?v=50cDIUKlQ8g
+  const dayJsObj = dayjs();
+  // console.log(dayJsObj.format("MMMM DD"));  ///////////////// Test
+
+  let currentHour = dayJsObj.format("H");
   let timeSlotContainer = $("#timeSlots");
   // Put every time slot into an array
   let timeSlotList = timeSlotContainer.find("[id]").map(function () {
     return this.id;
   }).get();
-  console.log(timeSlotList);  ///////////////// Test
+  // console.log(timeSlotList);  ///////////////// Test
 
   for (let i = 0; i < timeSlotList.length; i++) {
     // Work day planner starts at 9:00
@@ -81,27 +70,24 @@ $(function () {
     }
   }
 
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-
+  // Get all local storage IDs and values to place the value in each time slot based on the matching ID.
   let keyIdList = [];
   for (let i = 0; i < localStorage.length; i++) {
     keyIdList.push(localStorage.key(i));
   }
-  console.log(keyIdList); ///////////////// Test
+  // console.log(keyIdList); ///////////////// Test
 
   let keyValueList = getAllStorage();
   keyValueList.reverse();
-  console.log(keyValueList); ///////////////// Test
+  // console.log(keyValueList); ///////////////// Test
 
   for (let i = 0; i < keyIdList.length; i++) {
     if (timeSlotList.includes(keyIdList[i])) {
-      $("#" + keyIdList[i]).children(".description").val() = keyValueList[i]; ///////////////// Issue selecting the correct element here
+      $("#" + keyIdList[i]).children(".description").val(keyValueList[i]);
     }
   }
 
+  // Get all values from local storage and put them in an array.
   // https://stackoverflow.com/questions/17745292/how-to-retrieve-all-localstorage-items-without-knowing-the-keys-in-advance
   function getAllStorage() {
     let values = [];
@@ -115,9 +101,8 @@ $(function () {
     return values;
   }
 
-  // TODO: Add code to display the current date in the header of the page.
-
-/*   let currentDay = $("#currentDay");
-  // Get date from Day.js here and save it to a variable
-  currentDay.text("variable"); */
+  // Show current day of the week in the header using dayjs.
+  let dayId = $("#currentDay");
+  let currentDay = dayJsObj.format("dddd, MMMM D");
+  dayId.text(currentDay);
 });
