@@ -1,5 +1,5 @@
 
-# UCI-BOOTCAMP-WEEK-5-WORK-DAY-SCHEDULER
+# Demo Workday Scheduler
 
 ___
 
